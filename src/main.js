@@ -16,7 +16,7 @@ Vue.use(ElementUI);
 Vue.use(VueRouter);
 //配置路由
 const routes = [
-  {path:'/login', component:Login}
+  {path:'/', component:Login}
 ];
 //创建路由
 const router = new VueRouter({routes})
