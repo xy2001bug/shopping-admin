@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import axios from 'axios'
 import Login from "./pages/Login.vue"
+import Admin from "./pages/Admin.vue"
 //引入路由包1
 import VueRouter from 'vue-router'
 
@@ -16,7 +17,8 @@ Vue.use(ElementUI);
 Vue.use(VueRouter);
 //配置路由
 const routes = [
-  {path:'/', component:Login}
+  {path:"/",component: Admin},
+  {path:'/login', component:Login}
 ];
 //创建路由
 const router = new VueRouter({routes})
