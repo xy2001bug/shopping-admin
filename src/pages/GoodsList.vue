@@ -4,7 +4,7 @@
     <el-row type="flex" justify="space-between">
       <div>
         <el-button type="success">添加</el-button>
-        <el-button type="danger">删除</el-button>
+        <el-button type="danger" @click="headleDelMore">删除</el-button>
       </div>
       <div class="search">
         <el-input placeholder="请输入内容" class="input-with-select">
@@ -58,7 +58,7 @@
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="1"
+      :current-page="pageIndex"
       :page-sizes="[100, 200, 300, 400]"
       :page-size="100"
       layout="total, sizes, prev, pager, next, jumper"
@@ -71,34 +71,44 @@
 export default {
   data() {
     return {
-      tableData: [
-        // {
-        //   id: 103,
-        //   title: "骆驼男装2017秋季新款运动休闲纯色夹克青年宽松长袖针织开衫卫",
-        //   is_top: 1,
-        //   is_hot: 1,
-        //   is_slide: 1,
-        //   categoryname: "男装",
-        //   img_url: "/imgs/SJ4EgwosX0wTqvyAvhtFGT1w.jpg",
-        //   imgurl:
-        //     "http://127.0.0.1:8899/upload/imgs/0SvKcU-TU4nI3cU3fBNVsgsp.jpg",
-        //   goods_no: "NZ0000000002",
-        //   stock_quantity: 200,
-        //   market_price: 1000,
-        //   sell_price: 800
-        // },
-         
-      ],
-        pageIndex :1,
-         pageSize :5,
-       
+      tableData: [],
+      pageIndex: 1,
+      pageSize: 5,
+      //用来存放小方块选中时的对象
+      multipleSelection: ""
     };
   },
 
   methods: {
-      //这个是选中小方块就触发的方法
+    //这个是选中小方块就触发的方法
     handleSelectionChange(val) {
+      console.log(val);
       this.multipleSelection = val;
+    },
+    //这是删除多个
+    headleDelMore() {
+      //获取到选中的id  map方法返回的是一个数组
+      const arr = this.multipleSelection.map(e => {
+        return e.id;
+      });
+      //把获取的id转为字符串,通过urli地址栏传递给后台
+      const ids = arr.join(",");
+      console.log(ids);
+      //要进行删除操作,通过axios把id传递回去,应该提供接口来处理
+      this.$axios({
+        url: `http://localhost:8899/admin/goods/del/${ids}`,
+        method: "GET"
+      }).then(res => {
+        const { status, message } = res.data;
+        if (status === 0) {
+          this.$message.success(message);
+          //如果删除成功应该刷新页面
+         this.getList()
+        }
+        if (status === 1) {
+          this.$message.error(message);
+        }
+      });
     },
     //这编辑按钮的事件
     handleEdit(index, row) {
@@ -109,23 +119,27 @@ export default {
       console.log(index, row);
     },
     //这两个是处理分页的事件
-     handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-      },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-      }
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
     },
 
-  
-  mounted() {
-    this.$axios({
-        url:`http://localhost:8899/admin/goods/getlist?pageIndex=1&pageSize=5&searchvalue=`,
+    //封装刷新页面的方法
+    getList() {
+      this.$axios({
+        url: `http://localhost:8899/admin/goods/getlist?pageIndex=1&pageSize=5&searchvalue=`,
         method: "GET"
-    }).then(res=>{
-        console.log(res);
-        this.tableData = res.data.message
-    })
+      }).then(res => {
+        // console.log(res);
+        this.tableData = res.data.message;
+      });
+    }
+  },
+
+  mounted() {
+      this.getList()
   }
 };
 </script>
@@ -137,11 +151,11 @@ export default {
 .input-with-select {
   background-color: #fff;
 }
- .goods-img{
-      width:60px;
-      height:60px;
-      /*表示元素压缩的倍数，如果是0，表示不会被挤压*/
-      flex-shrink: 0;
-      margin-right:5px;
-  }
+.goods-img {
+  width: 60px;
+  height: 60px;
+  /*表示元素压缩的倍数，如果是0，表示不会被挤压*/
+  flex-shrink: 0;
+  margin-right: 5px;
+}
 </style>
