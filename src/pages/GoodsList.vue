@@ -49,7 +49,7 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -95,28 +95,19 @@ export default {
       const ids = arr.join(",");
       console.log(ids);
       //要进行删除操作,通过axios把id传递回去,应该提供接口来处理
-      this.$axios({
-        url: `http://localhost:8899/admin/goods/del/${ids}`,
-        method: "GET"
-      }).then(res => {
-        const { status, message } = res.data;
-        if (status === 0) {
-          this.$message.success(message);
-          //如果删除成功应该刷新页面
-         this.getList()
-        }
-        if (status === 1) {
-          this.$message.error(message);
-        }
-      });
+      this.delData(ids)
     },
     //这编辑按钮的事件
     handleEdit(index, row) {
       console.log(index, row);
     },
     //这个是删除按钮的事件
-    handleDelete(index, row) {
-      console.log(index, row);
+    handleDelete(row) {
+      //获取点击的id
+      const id = row.id;
+      //把id传递回去删除
+      this.delData(id)
+
     },
     //这两个是处理分页的事件
     handleSizeChange(val) {
@@ -135,8 +126,26 @@ export default {
         // console.log(res);
         this.tableData = res.data.message;
       });
+    },
+    //封装删除的方法
+    delData(str){
+        this.$axios({
+        url: `http://localhost:8899/admin/goods/del/${str}`,
+        method: "GET"
+      }).then(res => {
+        const { status, message } = res.data;
+        if (status === 0) {
+          this.$message.success(message);
+          //如果删除成功应该刷新页面
+         this.getList()
+        }
+        if (status === 1) {
+          this.$message.error(message);
+        }
+      });
     }
   },
+  
 
   mounted() {
       this.getList()
