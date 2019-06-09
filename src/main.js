@@ -3,6 +3,8 @@ import App from './App.vue'
 import axios from 'axios'
 import Login from "./pages/Login.vue"
 import Admin from "./pages/Admin.vue"
+import GoodsList from "./pages/GoodsList.vue";
+import CategoryList from "./pages/CategoryList.vue";
 //引入路由包1
 import VueRouter from 'vue-router'
 
@@ -17,8 +19,13 @@ Vue.use(ElementUI);
 Vue.use(VueRouter);
 //配置路由
 const routes = [
-  {path:"/",component: Admin},
-  {path:'/login', component:Login}
+  {path:'/', redirect :"/admin/goods-list",meta:"首页"},
+  {path:"/admin",component: Admin,meta:"后台管理",
+    children:[
+      {path:"goods-list", component:GoodsList,meta:"商品列表"},
+      {path:"category-list", component:CategoryList,meta:"分类列表"}
+    ]},
+  {path:'/login', component:Login,meta:"登录"}
 ];
 //创建路由
 const router = new VueRouter({routes})

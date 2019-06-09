@@ -1,6 +1,6 @@
 <template>
     <el-menu
-      default-active="2"
+      default-active="1-1"
       class="el-menu-vertical-demo"
       background-color="#545c64"
       text-color="#fff"
@@ -13,11 +13,13 @@
           <span>购物商城</span>
         </template>
         <el-menu-item index="1-1">
-                <template slot="title">商品管理</template>
+                <!-- <template slot="title">商品管理</template> -->
+                <router-link to="/admin/goods-list">商品管理</router-link>
             </el-menu-item>
 
             <el-menu-item index="1-2">
-                <template slot="title">栏目管理</template>
+                <!-- <template slot="title">栏目管理</template> -->
+                <router-link to="/admin/category-list">栏目管理</router-link>
             </el-menu-item>    
       </el-submenu>
     
@@ -40,5 +42,9 @@ export default {
     width: 200px;
     min-height: 400px;
 }
+.el-menu-vertical-demo a{
+        color:inherit;
+        text-decoration: none;
+    }
 
 </style>

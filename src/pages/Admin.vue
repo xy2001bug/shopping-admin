@@ -8,8 +8,12 @@
         <el-header>
             <Header @click="headerShow"></Header>
         </el-header>
+        
         <el-main>
             <Crumbs></Crumbs>
+            <div>
+              <router-view></router-view>
+            </div>
         </el-main>
       </el-container>
     </el-container>
