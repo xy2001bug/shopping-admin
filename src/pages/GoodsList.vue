@@ -7,8 +7,9 @@
         <el-button type="danger" @click="headleDelMore">删除</el-button>
       </div>
       <div class="search">
-        <el-input placeholder="请输入内容" class="input-with-select">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-input placeholder="请输入内容"  class="input-with-select"
+        v-model="searchVules">
+          <el-button slot="append" icon="el-icon-search" @click="headleSearch"></el-button>
         </el-input>
       </div>
     </el-row>
@@ -54,15 +55,20 @@
       </el-table-column>
     </el-table>
     <!-- /这个是分页
+        size-change :每一页的条数
+        current-change:currentPage 改变时会触发 返回的是当前页
+        current-page:当前页数
+
+
     -->
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="pageIndex"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
+      :page-sizes="[5, 10, 15, 20]"
+      :page-size="5"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400"
+      :total="total"
     ></el-pagination>
   </div>
 </template>
@@ -74,6 +80,9 @@ export default {
       tableData: [],
       pageIndex: 1,
       pageSize: 5,
+      total:0,
+      //这是搜索条件
+      searchVules:'',
       //用来存放小方块选中时的对象
       multipleSelection: ""
     };
@@ -82,9 +91,14 @@ export default {
   methods: {
     //这个是选中小方块就触发的方法
     handleSelectionChange(val) {
-      console.log(val);
+    //   console.log(val);
       this.multipleSelection = val;
     },
+    //这是模糊搜索
+    headleSearch(){
+        this.getList()
+    },
+
     //这是删除多个
     headleDelMore() {
       //获取到选中的id  map方法返回的是一个数组
@@ -93,14 +107,16 @@ export default {
       });
       //把获取的id转为字符串,通过urli地址栏传递给后台
       const ids = arr.join(",");
-      console.log(ids);
+    //   console.log(ids);
       //要进行删除操作,通过axios把id传递回去,应该提供接口来处理
       this.delData(ids)
     },
+
     //这编辑按钮的事件
     handleEdit(index, row) {
       console.log(index, row);
     },
+
     //这个是删除按钮的事件
     handleDelete(row) {
       //获取点击的id
@@ -109,21 +125,28 @@ export default {
       this.delData(id)
 
     },
+
     //这两个是处理分页的事件
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      this.pageSize = val
+      this.getList()
     },
+    //切换当前页的显示
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+    //   console.log(`当前页: ${val}`);
+    //需要注意一个问题:这个pageIndex是页面交互得到的,要实现数据的渲染,必须要把这个值传递给后台(通过ajax传递),后台才能根据传递过去的值在数据中进行查询,得出结果后渲染在页面
+    this.pageIndex = val;
+    this.getList()  
     },
 
     //封装刷新页面的方法
     getList() {
       this.$axios({
-        url: `http://localhost:8899/admin/goods/getlist?pageIndex=1&pageSize=5&searchvalue=`,
+        url: `http://localhost:8899/admin/goods/getlist?pageIndex=
+        ${this.pageIndex}&pageSize=${this.pageSize}&searchvalue=${this.searchVules}`,
         method: "GET"
       }).then(res => {
-        // console.log(res);
+        this.total = res.data.totalcount
         this.tableData = res.data.message;
       });
     },
@@ -146,7 +169,6 @@ export default {
     }
   },
   
-
   mounted() {
       this.getList()
   }
