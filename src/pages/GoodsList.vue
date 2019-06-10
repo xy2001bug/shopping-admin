@@ -3,7 +3,7 @@
     <!-- //这是添加/删除/搜索 -->
     <el-row type="flex" justify="space-between">
       <div>
-        <el-button type="success">添加</el-button>
+        <el-button type="success" @click="headleToGoodsAdd">添加</el-button>
         <el-button type="danger" @click="headleDelMore">删除</el-button>
       </div>
       <div class="search">
@@ -58,8 +58,6 @@
         size-change :每一页的条数
         current-change:currentPage 改变时会触发 返回的是当前页
         current-page:当前页数
-
-
     -->
     <el-pagination
       @size-change="handleSizeChange"
@@ -89,6 +87,10 @@ export default {
   },
 
   methods: {
+    //跳转到添加页面
+    headleToGoodsAdd(){
+      this.$router.push("/admin/goods-add")
+    },
     //这个是选中小方块就触发的方法
     handleSelectionChange(val) {
     //   console.log(val);
@@ -146,6 +148,7 @@ export default {
         ${this.pageIndex}&pageSize=${this.pageSize}&searchvalue=${this.searchVules}`,
         method: "GET"
       }).then(res => {
+          console.log(res);
         this.total = res.data.totalcount
         this.tableData = res.data.message;
       });

@@ -5,6 +5,7 @@ import Login from "./pages/Login.vue"
 import Admin from "./pages/Admin.vue"
 import GoodsList from "./pages/GoodsList.vue";
 import CategoryList from "./pages/CategoryList.vue";
+import GoodsAdd from "./pages/GoodsAdd.vue"
 //引入路由包1
 import VueRouter from 'vue-router'
 
@@ -23,7 +24,8 @@ const routes = [
   {path:"/admin",component: Admin,meta:"后台管理",
     children:[
       {path:"goods-list", component:GoodsList,meta:"商品列表"},
-      {path:"category-list", component:CategoryList,meta:"分类列表"}
+      {path:"category-list", component:CategoryList,meta:"分类列表"},
+      {path:"goods-add", component:GoodsAdd, meta:"添加商品"}
     ]},
   {path:'/login', component:Login,meta:"登录"}
 ];
