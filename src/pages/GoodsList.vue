@@ -179,17 +179,26 @@ export default {
 </script>
 
 <style>
-.el-input {
-  width: 80px;
-}
-.input-with-select {
-  background-color: #fff;
-}
-.goods-img {
-  width: 60px;
-  height: 60px;
-  /*表示元素压缩的倍数，如果是0，表示不会被挤压*/
-  flex-shrink: 0;
-  margin-right: 5px;
-}
+ .el-select .el-input {
+    width: 130px;
+  }
+  .input-with-select .el-input-group__prepend {
+    background-color: #fff;
+  }
+
+  .input-search{
+      width:200px;
+  }
+  
+  .goods-img{
+      width:60px;
+      height:60px;
+      /*表示元素压缩的倍数，如果是0，表示不会被挤压*/
+      flex-shrink: 0;
+      margin-right:5px;
+  }
+  /* //设置图片的大小 */
+  .el-table img{
+    width: 60px;
+  }
 </style>
