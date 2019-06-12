@@ -68,12 +68,15 @@
         on-preview:点击预览中的图片执行的函数
         on-remove：删除预览中的图片
       headleListSuccess:上传成功的回调函数-->
+      <!-- file-list:指定渲染的文件列表 -->
       <el-upload
         action="http://localhost:8899/admin/article/uploadimg"
         list-type="picture-card"
         :on-preview="handlePictureCardPreview"
         :on-remove="handleRemove"
         :on-success="headleListSuccess"
+        :file-list="form.fileList"
+
       >
         <i class="el-icon-plus"></i>
       </el-upload>
@@ -124,7 +127,7 @@ export default {
         zhaiyao: "",
         content: "",
         imgList: [], //这是封面图片
-        fileList: [], //这是多张图片
+        fileList: [], //这是多张图片fileList
 
         is_slide: false //是否轮播"
       },
@@ -167,19 +170,21 @@ export default {
     },
     //这是图片相册的方法
     //删除预览中的文件
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
+   handleRemove(file, fileList) {
+            // 把删除之后的列表赋值给this.form.fileList
+            const files = fileList.map(v => {
+                return v.response;
+            });
+
+            this.form.fileList = files;
+        },
     //选中预览中的图片
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
-    },
+   handlePictureCardPreview(file) {
+            this.dialogImageUrl = file.url;
+            this.dialogVisible = true;
+      },
     headleListSuccess(res, file, fileList) {
-      const tempArr = fileList.map(e => {
-        return e.response;
-      });
-      this.form.fileList = tempArr;
+     this.form.fileList.push(file.response);
 
     },
     //按键的提交
@@ -224,16 +229,23 @@ export default {
       url: "http://localhost:8899/admin/goods/getgoodsmodel/" + id,
       method: "GET"
     }).then(res => {
+      console.log("这是回来的结果");
+      console.log(res);
+
       const { status, message } = res.data;
       this.form = {
         ...message,
         //把类型的数字转为相应的文字(原因是返回来的数据是字符串，但是在数据的渲染中应该是数字对应相应的字符，所以要把category_id转为数字类型)
-        category_id: +message.category_id
+        category_id: +message.category_id,
+        fileList: message.fileList.map(v => {
+                    return {
+                        ...v,
+                        url: `http://localhost:8899${v.shorturl}`
+                    }
+                })
       };
-    //   console.log(typeof this.form.category_id);
     //这个是封面图片
       this.imageUrl = message.imgList[0].url
-    //   console.log( message.imgList[0].url);
     });
   }
 };

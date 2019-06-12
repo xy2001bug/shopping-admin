@@ -62,23 +62,22 @@
       <el-input v-model="form.sell_price"></el-input>
     </el-form-item>
     <!-- 图片相册 -->
-    <el-form-item label="图片相册">
-        <!-- list-type:文件列表的类型
-        on-preview:点击预览中的图片执行的函数
-        on-remove：删除预览中的图片
-        headleListSuccess:上传成功的回调函数 -->
-      <el-upload
-        action="http://localhost:8899/admin/article/uploadimg"
-        list-type="picture-card"
-        :on-preview="handlePictureCardPreview"
-        :on-remove="handleRemove"
-        :on-success="headleListSuccess"
-      >
-        <i class="el-icon-plus"></i>
-      </el-upload>
-      <el-dialog :visible.sync="dialogVisible">
-        <img width="100%" :src="dialogImageUrl" alt>
-      </el-dialog>
+  <el-form-item label="图片相册">
+        <!-- list-type: 声明当前图片相册的方式显示 -->
+        <!-- on-preview：预览的事件处理函数 -->
+        <!-- on-remove：删除图片时候触发的事件 -->
+        <el-upload
+            action="http://localhost:8899/admin/article/uploadimg"
+            list-type="picture-card"
+            :on-success="handleCartSuccess"
+            :on-preview="handlePictureCardPreview"
+            :on-remove="handleRemove">
+            <i class="el-icon-plus"></i>
+        </el-upload>
+
+        <el-dialog :visible.sync="dialogVisible">
+            <img width="100%" :src="dialogImageUrl" alt="">
+        </el-dialog>
     </el-form-item>
 
     <el-form-item label="内容摘要">
@@ -167,24 +166,25 @@ export default {
     //这是图片相册的方法
     //删除预览中的文件
     handleRemove(file, fileList) {
-      console.log(file, fileList);
+      const files = fileList.map( v=>{
+        return v.response
+      })
+      this.form.fileList = files
     },
     //选中预览中的图片
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
-    headleListSuccess(res,file,fileList){
-        // console.log(res);
-        // console.log(file);
-        // console.log(fileList);
-        // const tempArr = fileList.map(e =>{
-        //     return e.response
-        // })
-        // this.form.fileList = tempArr
-        // console.log(this.form.fileList);
-        this.form.fileList.push(file.response)
-    },
+     handleCartSuccess(res, file, fileList){
+            // 把fileList的数组中的每一项中response属性提取出来
+            const files = fileList.map(v => {
+                return v.response;
+            });
+
+            //console.log(files)
+            this.form.fileList = files;
+        },
     //按键的提交
     onSubmit() {
       this.$axios({
