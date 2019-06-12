@@ -49,7 +49,7 @@
       -->
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -115,8 +115,10 @@ export default {
     },
 
     //这编辑按钮的事件
-    handleEdit(index, row) {
-      console.log(index, row);
+    handleEdit(row) {
+      // console.log(row);//这是一个对象
+      this.$router.push("/admin/goods-edit/" + row.id)
+    
     },
 
     //这个是删除按钮的事件
