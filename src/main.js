@@ -34,7 +34,38 @@ const routes = [
 //创建路由
 const router = new VueRouter({routes})
 //把axios绑定到原型方法
-Vue.prototype.$axios = axios;
+Vue.prototype.$axios = axios
+
+//这是路由守卫，to是要去的地址，from是来源地址，next（）是要成功的地址
+router.beforeEach((to,from,next)=>{
+  //发送axios来验证是否登录
+  axios({
+    url: "http://localhost:8899/admin/account/islogin",
+    method:'GET',
+    // 处理session跨域
+    withCredentials: true	
+  }).then(res=>{
+    const {code} = res.data
+    //如果访问的是登录页面
+    if(to.path == "/login"){
+      console.log(to);
+      if(code == "logined"){
+        next("/admin/goods-list")
+      }else{
+        next()
+      }
+
+      //如果访问的不是登录页
+    }else{
+      if(code=="logined"){
+        next()
+      }else{
+        next("/login")
+      }
+    }
+  })
+})
+
 
 new Vue({
   render: h => h(App),

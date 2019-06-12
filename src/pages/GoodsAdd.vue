@@ -194,7 +194,6 @@ export default {
         //处理session跨域的问题
         withCredentials: true
       }).then(res=>{
-        console.log(res);
         const {status,message} = res.data
         if(status === 0){
             this.$message.success(message)

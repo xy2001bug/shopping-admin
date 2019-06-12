@@ -229,8 +229,6 @@ export default {
       url: "http://localhost:8899/admin/goods/getgoodsmodel/" + id,
       method: "GET"
     }).then(res => {
-      console.log("这是回来的结果");
-      console.log(res);
 
       const { status, message } = res.data;
       this.form = {
